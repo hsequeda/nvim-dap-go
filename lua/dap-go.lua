@@ -129,7 +129,7 @@ function M.setup(opts)
   setup_go_configuration(dap, config)
 end
 
-local function debug_test(testname, testpath, build_flags)
+local function debug_test(testname, testpath, build_flags, args)
   local dap = load_module("dap")
   dap.run({
     type = "go",
@@ -137,25 +137,30 @@ local function debug_test(testname, testpath, build_flags)
     request = "launch",
     mode = "test",
     program = testpath,
-    args = { "-test.run", "^" .. testname .. "$" },
+    args = args,
     buildFlags = build_flags,
   })
 end
 
-function M.debug_test()
-  local test = ts.closest_test()
+function M.debug_test(testname, testpackage)
+  if testname == nil or testpackage == nil then
+    local test = ts.closest_test()
+    testname = test.name
+    testpackage = test.package
+  end
 
-  if test.name == "" then
+
+  if testname == "" or testpackage == "" then
     vim.notify("no test found")
     return false
   end
 
-  M.last_testname = test.name
-  M.last_testpath = test.package
+  M.last_testname = testname
+  M.last_testpath = testpackage
 
-  local msg = string.format("starting debug session '%s : %s'...", test.package, test.name)
+  local msg = string.format("starting debug session '%s : %s'...", testpackage, testname)
   vim.notify(msg)
-  debug_test(test.name, test.package, M.test_buildflags)
+  debug_test(testname, testpackage, M.test_buildflags,{ "-test.run", "^" .. testname .. "$" })
 
   return true
 end
