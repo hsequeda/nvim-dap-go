@@ -9,6 +9,7 @@ An extension for [nvim-dap][1] providing configurations for launching go debugge
 - Configuration to attach nvim-dap and Delve into a running process and start a debug session.
 - Configuration to start a debug session in the main function.
 - Configuration to run tests in a debug session.
+- Configuration to run test in a debug session with custom arguments
 
 ## Pre-reqs
 
