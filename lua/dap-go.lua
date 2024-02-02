@@ -110,7 +110,16 @@ local function setup_go_configuration(dap, configs)
     },
     {
       type = "go",
-      name = "Debug Test(Arguments)",
+      name = "Debug Test (Arguments)",
+      request = "launch",
+      mode = "test",
+      program = "${file}",
+      args = get_arguments,
+      buildFlags = configs.delve.build_flags,
+    },
+    {
+      type = "go",
+      name = "Debug Test (Arguments) (go.mod)",
       request = "launch",
       mode = "test",
       program = "./${relativeFileDirname}",
@@ -152,12 +161,14 @@ local function debug_test(testname, testpath, build_flags, args)
 end
 
 function M.debug_test(testname, testpackage)
-  if testname == nil or testpackage == nil then
-    local test = ts.closest_test()
+  local test = ts.closest_test()
+  if testname == nil then
     testname = test.name
-    testpackage = test.package
   end
 
+  if testpackage == nil then
+    testpackage = test.package
+  end
 
   if testname == "" or testpackage == "" then
     vim.notify("no test found")
