@@ -108,6 +108,15 @@ local function setup_go_configuration(dap, configs)
       program = "./${relativeFileDirname}",
       buildFlags = configs.delve.build_flags,
     },
+    {
+      type = "go",
+      name = "Debug Test(Arguments)",
+      request = "launch",
+      mode = "test",
+      program = "./${relativeFileDirname}",
+      args = get_arguments,
+      buildFlags = configs.delve.build_flags,
+    },
   }
 
   if configs == nil or configs.dap_configurations == nil then
